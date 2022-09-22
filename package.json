@@ -1,6 +1,6 @@
 {
   "name": "websocketapi",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "API to learn about sockets.",
   "main": "./src/index.js",
   "scripts": {

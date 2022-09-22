@@ -1,19 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 
-
-class Server {
+class ServerSocket {
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
         // sockets
-        this.server = require('http').createServer( this.app );
-        this.io = require('socket.io')(this.server); 
+        this.httpServer = http.createServer( this.app );
+        this.io = new Server(this.httpServer, {
+            pingTimeout: 2000
+        }); 
 
         this.middlewares();
 
         this.routes();
+
+        this.socketsConfig();
     }
 
     middlewares() {
@@ -35,11 +40,20 @@ class Server {
         this.app.use('/api/examples', require('../routes/examples.routes'));
     }
 
+    socketsConfig() {
+        this.io.on('connection', (socket) => {
+            console.log('Client connected: ', socket.id);
+            socket.on('disconnect', (reason) => {
+                console.log(`Client with Id '${socket.id}' disconnected because '${reason}'`)
+            });
+        })
+    }
+
     listen() {
-        this.server.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log('Server running at port: ', this.port);
         });
     }
 }
 
-module.exports = Server;
+module.exports = ServerSocket;

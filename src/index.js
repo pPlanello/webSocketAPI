@@ -1,8 +1,8 @@
 require('dotenv').config();
-const Server = require('./server/server');
+const ServerSocket = require('./server/server');
 
 
-const server = new Server();
+const server = new ServerSocket();
 
 
 server.listen();
