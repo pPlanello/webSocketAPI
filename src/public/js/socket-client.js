@@ -1,18 +1,35 @@
-const socket_online = document.getElementById('socketOnline');
-const socket_offline = document.getElementById('socketOffline');
+const socketOnline = document.getElementById('socketOnline');
+const socketOffline = document.getElementById('socketOffline');
+const buttonSend = document.getElementById('buttonSend');
+const txtMessage = document.getElementById('txtMessage');
 
 const socket = io();
 
-socket.on('connect', () => {
+socket.on('connect', (socket) => {
     console.log('Connected');
 
-    socket_online.style.display = '';
-    socket_offline.style.display = 'none';
+    socketOnline.style.display = '';
+    socketOffline.style.display = 'none';
 });
 
 socket.on('disconnect', () => {
     console.log('Disconnected');
-    
-    socket_online.style.display = 'none';
-    socket_offline.style.display = '';
+
+    socketOnline.style.display = 'none';
+    socketOffline.style.display = '';
+});
+
+socket.on('server-send-message', (message) => {
+    console.log('Message received from Server: ', message);
+});
+
+buttonSend.addEventListener('click', () => {
+    const message = txtMessage.value;
+
+    const payload = {
+        message,
+        id: 1237896,
+        date: new Date()
+    }
+    socket.emit('client-send-message', payload);
 });
